@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
+import com.hyphenate.easeui.EaseUI;
 
 public class CCApplication extends Application {
 
@@ -28,5 +29,6 @@ public class CCApplication extends Application {
         // 默认添加好友时，是不需要验证的，改成需要验证
         options.setAcceptInvitationAlways(false);
         EMClient.getInstance().init(this, options);
+        EaseUI.getInstance().init(this, options);
     }
 }

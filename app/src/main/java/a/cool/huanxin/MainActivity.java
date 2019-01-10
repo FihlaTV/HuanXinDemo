@@ -1,15 +1,18 @@
 package a.cool.huanxin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.hyphenate.EMCallBack;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMError;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.util.NetUtils;
 
@@ -157,7 +160,53 @@ public class MainActivity extends AppCompatActivity {
 //        }
         //发送消息
         EMClient.getInstance().chatManager().sendMessage(message);
+
+        message.setMessageStatusCallback(new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                Log.i("MainActivity", "setMessageStatusCallback onSuccess ");
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                Log.i("MainActivity", "setMessageStatusCallback onError  error = " + error);
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+
+            }
+        });
     }
+
+    @OnClick(R.id.btn_getmessage_history)
+    public void getHistoryMessage() {
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation("1234");
+        //获取此会话的所有消息
+        List<EMMessage> messages = conversation.getAllMessages();
+        Log.i("MainActivity", "getHistoryMessage messages  messages = " + messages);
+        //SDK初始化加载的聊天记录为20条，到顶时需要去DB里获取更多
+        //获取startMsgId之前的pagesize条消息，此方法获取的messages SDK会自动存入到此会话中，APP中无需再次把获取到的messages添加到会话中
+//        List<EMMessage> messages2 = conversation.loadMoreMsgFromDB(startMsgId, pagesize);
+    }
+
+    @OnClick(R.id.btn_get_unread_message)
+    public void getUnReadMessage() {
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation("1234");
+        //获取此会话的所有消息
+        List<EMMessage> messages = conversation.getAllMessages();
+
+        Log.i("MainActivity", "getHistoryMessage messages  messages = " + messages);
+        //SDK初始化加载的聊天记录为20条，到顶时需要去DB里获取更多
+        //获取startMsgId之前的pagesize条消息，此方法获取的messages SDK会自动存入到此会话中，APP中无需再次把获取到的messages添加到会话中
+//        List<EMMessage> messages2 = conversation.loadMoreMsgFromDB(startMsgId, pagesize);
+    }
+
+    @OnClick(R.id.btn_east_ui)
+    public void toEasyUI() {
+        startActivity(new Intent(this, EasyUIActivity.class));
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -204,5 +253,6 @@ public class MainActivity extends AppCompatActivity {
             ToastHelper.showShortMessage("消息状态变动 messages = " + message);
         }
     };
+
 
 }

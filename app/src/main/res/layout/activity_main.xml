@@ -24,4 +24,22 @@
         android:layout_height="wrap_content"
         android:text="Send"/>
 
+    <Button
+        android:id="@+id/btn_getmessage_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="gethistoryMessage"/>
+
+    <Button
+        android:id="@+id/btn_get_unread_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GetUnReadMessage"/>
+
+    <Button
+        android:id="@+id/btn_east_ui"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="EasyUI"/>
+
 </LinearLayout>
