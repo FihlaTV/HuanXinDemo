@@ -21,6 +21,7 @@ import com.hyphenate.util.NetUtils;
 import java.util.List;
 
 import a.cool.huanxin.CCApplication;
+import a.cool.huanxin.base.ICallback;
 import a.cool.huanxin.ben.CurrentUser;
 import a.cool.huanxin.manager.CurrentUserManager;
 
@@ -235,7 +236,7 @@ public class HuanXinServer extends Service {
         }
     };
 
-    public static void sendMessage(String content, String userName) {
+    public static void sendMessage(String content, String userName, final ICallback callback) {
         EMMessage message = EMMessage.createTxtSendMessage(content, userName);
         message.setChatType(EMMessage.ChatType.Chat);
         EMClient.getInstance().chatManager().sendMessage(message);
@@ -243,6 +244,9 @@ public class HuanXinServer extends Service {
             @Override
             public void onSuccess() {
                 Log.d("HuanXinServer", "发送成功");
+                if (callback != null) {
+                    callback.onResult(1);
+                }
             }
 
             @Override
@@ -250,6 +254,9 @@ public class HuanXinServer extends Service {
                 Log.d("HuanXinServer", "发送失败" + code + "," + error);
                 if (code == 201) {
                     loginHuanXin();
+                }
+                if (callback != null) {
+                    callback.onStringError(code, error);
                 }
             }
 

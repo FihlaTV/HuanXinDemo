@@ -121,5 +121,7 @@
     <color name="shape1">#5d8df7</color>
     <color name="shape2" tools:ignore="MissingDefaultResource">#5EB9F8</color>
     <color name="shape3">#5CC2F8</color>
+    <color name="tab_select_color">#149FC9</color>
+    <color name="tab_un_select_color">#666666</color>
 
 </resources>

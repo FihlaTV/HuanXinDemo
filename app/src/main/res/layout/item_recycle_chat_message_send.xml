@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              tools:ignore="MissingPrefix">
+
+    <TextView
+        android:id="@+id/tv_recycle_chat_send_content"
+        style="@style/TextStyleRobotoRegular"
+        android:layout_width="wrap_content"
+        android:maxWidth="270dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|right"
+        android:layout_marginEnd="@dimen/dp8"
+        android:layout_marginRight="@dimen/dp8"
+        android:layout_marginTop="@dimen/dp8"
+        android:background="@drawable/shape_text_chat_send_message_bg"
+        android:lineSpacingExtra="4.5sp"
+        android:padding="@dimen/dp8"
+        android:textColor="@color/white"
+        android:textSize="16sp"/>
+</LinearLayout>

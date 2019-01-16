@@ -97,4 +97,14 @@ public class ConversationFragment extends BaseFragment implements View.OnTouchLi
             ActivityUtil.startChatActivity(ConversationFragment.this, chatMessage, AppConstant.ActivityRequestCode.GO_TO_TEXT_CHAT_ACTIVITY);
         }
     };
+    /**
+     * refresh ui
+     */
+    public void refresh() {
+//        if(!handler.hasMessages(MSG_REFRESH)){
+//            handler.sendEmptyMessage(MSG_REFRESH);
+//        }
+    }
+
+
 }

@@ -95,7 +95,6 @@
             android:name=".activity.LoginActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboardHidden"
             android:screenOrientation="portrait"/>
-
         <activity
             android:name=".activity.RegisterActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboardHidden"
@@ -110,7 +109,12 @@
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
-
+        <activity
+            android:name=".activity.AddContactActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboardHidden"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.NewFriendsMsgActivity">
+        </activity>
     </application>
 
 </manifest>
