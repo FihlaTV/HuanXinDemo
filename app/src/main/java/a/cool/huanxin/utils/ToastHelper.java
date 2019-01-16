@@ -1,9 +1,8 @@
-package a.cool.huanxin;
+package a.cool.huanxin.utils;
 
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.StringRes;
 import android.widget.Toast;
 
 public class ToastHelper {
@@ -24,7 +23,7 @@ public class ToastHelper {
         mHandler = new Handler(Looper.getMainLooper());
     }
 
-    public static void showShortMessage(@StringRes int text) {
+    public static void showShortMessage(int text) {
         if (mContext.getString(text).equals(oldMsg) && System.currentTimeMillis() - time < INTERVAL_TIME) {
             return;
         }

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/ll_title_chat_activity"
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        android:background="@color/custom_notification_text_blue">
+
+        <ImageView
+            android:id="@+id/iv_back_chat_activity"
+            android:layout_width="20dp"
+            android:layout_height="28dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:padding="5dp"
+            android:src="@drawable/icon_left_back"/>
+
+        <TextView
+            android:id="@+id/tv_user_name_chat_activity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:text="用户昵称"
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
+
+    </RelativeLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl_chat_messages"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@+id/tv_input_line_chat_activity"
+        android:layout_weight="1"
+        android:background="#EEEEEE">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rlv_chat_activity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/tv_input_line_chat_activity"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="#ffd8d8d8"/>
+
+    <LinearLayout
+        android:id="@+id/ll_input_chat_activity"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/edt_chat_activity"
+            style="@style/TextStyleRobotoMedium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="29dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="left|top"
+            android:hint="输入聊天内容"
+            android:inputType="text"
+            android:maxLines="4"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:textSize="12sp"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_send_message"
+            android:layout_width="81dp"
+            android:layout_height="match_parent"
+            android:background="@color/red_common_pure"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="发送"
+                android:textColor="@color/yellow"
+                android:textSize="20sp"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
