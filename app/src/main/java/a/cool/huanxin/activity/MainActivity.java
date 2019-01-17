@@ -23,6 +23,7 @@ import java.util.List;
 import a.cool.huanxin.R;
 import a.cool.huanxin.base.BaseActivity;
 import a.cool.huanxin.ben.AddFriendBean;
+import a.cool.huanxin.ben.ChatMessage;
 import a.cool.huanxin.ben.CurrentUser;
 import a.cool.huanxin.constants.Constant;
 import a.cool.huanxin.fragment.ContactsFragment;
@@ -118,6 +119,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         @Override
         public void onContactAdded(String username) {
             LogUtils.d("MyContactListener onContactAdded = " + username);
+            ChatMessage chatMessage = new ChatMessage();
+            chatMessage.setUserName(username);
+            if (mConversationFragment != null) {
+                mConversationFragment.refresh(chatMessage);
+            }
         }
 
         @Override
@@ -146,7 +152,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             //当有好友添加时 这里监听
             AddFriendBean addFriendBean = new AddFriendBean();
             addFriendBean.setUserName(username);
-
+            if (mContactsFragment != null) {
+                mContactsFragment.refresh(addFriendBean);
+            }
         }
 
         @Override
@@ -179,7 +187,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 if (currentTabIndex == 0) {
                     // refresh conversation list
                     if (mContactsFragment != null) {
-                        mContactsFragment.refresh();
+//                        mContactsFragment.refresh();
                     }
                 }
             }
@@ -200,11 +208,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 if (currentTabIndex == 0) {
                     // refresh conversation list
                     if (mConversationFragment != null) {
-                        mConversationFragment.refresh();
+//                        mConversationFragment.refresh();
                     }
                 } else if (currentTabIndex == 1) {
                     if (mContactsFragment != null) {
-                        mContactsFragment.refresh();
+//                        mContactsFragment.refresh();
                     }
                 }
                 String action = intent.getAction();

@@ -35,6 +35,7 @@ import a.cool.huanxin.service.HuanXinServer;
 import a.cool.huanxin.utils.ResourceUtil;
 import a.cool.huanxin.utils.ToastHelper;
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ChatActivity extends BaseActivity {
@@ -62,6 +63,7 @@ public class ChatActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        ButterKnife.bind(this);
         mCurrentUser = CurrentUserManager.getInstance().getCurrentUser();
         mChatMessage = getIntent().getParcelableExtra(AppConstant.IntentKey.EXTRA_DATA);
         if (mCurrentUser == null || mChatMessage == null) { onBackPressed(); }
@@ -100,14 +102,7 @@ public class ChatActivity extends BaseActivity {
             isSendMessing = false;
             return;
         }
-        final String receiverUserName = mChatMessage.getPhoneNumber();
-        if (TextUtils.isEmpty(receiverUserName)) {
-            ToastHelper.showShortMessage("此用户未注册环信");
-            isSendMessing = false;
-            return;
-        }
-        LogUtils.d("HuanXinServer", " receiverUserName = " + receiverUserName);
-        HuanXinServer.sendMessage(content, receiverUserName, new ICallback() {
+        HuanXinServer.sendMessage(content, mFriendUserName, new ICallback() {
             @Override
             public void onResult(Object o) {
                 Log.i("MainActivity", "setMessageStatusCallback onSuccess ");

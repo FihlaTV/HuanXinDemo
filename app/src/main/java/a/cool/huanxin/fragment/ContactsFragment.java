@@ -2,6 +2,8 @@ package a.cool.huanxin.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,9 +13,14 @@ import android.widget.ImageView;
 
 import com.gyf.barlibrary.ImmersionBar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import a.cool.huanxin.R;
 import a.cool.huanxin.activity.AddContactActivity;
+import a.cool.huanxin.adapter.AddFriendAdapter;
 import a.cool.huanxin.base.BaseFragment;
+import a.cool.huanxin.ben.AddFriendBean;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -27,6 +34,10 @@ public class ContactsFragment extends BaseFragment implements View.OnTouchListen
     @BindView(R.id.btn_group_chat) Button btnGroupChat;
     @BindView(R.id.btn_chat_room) Button btnChatRoom;
     @BindView(R.id.btn_video_chat_room) Button btnVideoChatRoom;
+    @BindView(R.id.rl_contacts_list) RecyclerView mRecyclerView;
+    private LinearLayoutManager mLinearLayoutManager;
+    private AddFriendAdapter mAddFriendAdapter;
+    private List<AddFriendBean> mAddFriendBeanList = new ArrayList<>();
     Unbinder unbinder;
 
     @Override
@@ -35,6 +46,20 @@ public class ContactsFragment extends BaseFragment implements View.OnTouchListen
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.setOnTouchListener(this);
+        initRecyclerView(mAddFriendBeanList);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
 
     @Override
     public void initImmersionBar() {
@@ -48,27 +73,18 @@ public class ContactsFragment extends BaseFragment implements View.OnTouchListen
     /**
      * refresh ui
      */
-    public void refresh() {
+    public void refresh(AddFriendBean addFriendBean) {
+        mAddFriendBeanList.add(addFriendBean);
+        initRecyclerView(mAddFriendBeanList);
+
 //        if(!handler.hasMessages(MSG_REFRESH)){
 //            handler.sendEmptyMessage(MSG_REFRESH);
 //        }
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        view.setOnTouchListener(this);
-    }
-
-    @Override
     public boolean onTouch(View v, MotionEvent event) {
         return true;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 
     @OnClick(R.id.iv_add_friend)
@@ -89,5 +105,26 @@ public class ContactsFragment extends BaseFragment implements View.OnTouchListen
     @OnClick(R.id.btn_video_chat_room)
     public void meetingClicked() {
 
+    }
+
+    public void initRecyclerView(List<AddFriendBean> userList) {
+        if (userList != null && userList.size() > 0 && mRecyclerView != null) {
+//            mTips.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            if (mLinearLayoutManager == null) {
+                mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+                mRecyclerView.setLayoutManager(mLinearLayoutManager);
+            }
+            if (mAddFriendAdapter == null) {
+                mAddFriendAdapter = new AddFriendAdapter();
+                mAddFriendAdapter.setDataSilently(userList);
+                mRecyclerView.setAdapter(mAddFriendAdapter);
+            } else {
+                mAddFriendAdapter.setData(userList);
+            }
+        } else if (mRecyclerView != null) {
+            mRecyclerView.setVisibility(View.GONE);
+//            mTips.setVisibility(View.VISIBLE);
+        }
     }
 }
