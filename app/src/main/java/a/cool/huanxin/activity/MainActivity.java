@@ -1,24 +1,34 @@
 package a.cool.huanxin.activity;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.PermissionUtils;
 import com.hyphenate.EMClientListener;
 import com.hyphenate.EMContactListener;
 import com.hyphenate.EMMultiDeviceListener;
 import com.hyphenate.chat.EMClient;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import a.cool.huanxin.R;
 import a.cool.huanxin.base.BaseActivity;
@@ -32,6 +42,8 @@ import a.cool.huanxin.fragment.DiscoverFragment;
 import a.cool.huanxin.fragment.MeFragment;
 import a.cool.huanxin.manager.CurrentUserManager;
 import a.cool.huanxin.service.HuanXinServer;
+import a.cool.huanxin.utils.ActivityUtil;
+import a.cool.huanxin.utils.ThreadExecutor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -60,6 +72,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private int currentTabIndex;
     private BroadcastReceiver internalDebugReceiver;
 
+    private LocationManager mLocationManager;
+    private String mLocationProvider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +97,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         EMClient.getInstance().addMultiDeviceListener(new MyMultiDeviceListener());
         //debug purpose only
         registerInternalDebugReceiver();
+        getPermission();
     }
 
     /**
@@ -391,4 +407,97 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         broadcastManager.unregisterReceiver(broadcastReceiver);
     }
 
+    public void getPermission() {
+        PermissionUtils.permission(PermissionConstants.LOCATION)
+                .rationale(new PermissionUtils.OnRationaleListener() {
+                    @Override
+                    public void rationale(final ShouldRequest shouldRequest) {
+                        shouldRequest.again(true);
+                    }
+                })
+                .callback(new PermissionUtils.FullCallback() {
+                    @Override
+                    public void onGranted(List<String> permissionsGranted) {
+                        refreshLocation();
+                    }
+
+                    @Override
+                    public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
+                        if (!permissionsDeniedForever.isEmpty()) {
+                            PermissionUtils.launchAppDetailsSettings();
+                        }
+                    }
+                }).request();
+    }
+
+    @SuppressLint("MissingPermission")
+    public void refreshLocation() {
+        LogUtils.d("getAddress refreshLocation(0");
+        ThreadExecutor.getInstance().schedule(new Runnable() {
+            @Override
+            public void run() {
+                if (isViewClose()) { return; }
+                LogUtils.d("getAddress refreshLocation()  000");
+                mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                List<String> providers = mLocationManager.getProviders(true);
+                if (providers.contains(LocationManager.NETWORK_PROVIDER)) {
+                    mLocationProvider = LocationManager.NETWORK_PROVIDER;
+                    LogUtils.d("getAddress refreshLocation()  111");
+                } else if (providers.contains(LocationManager.GPS_PROVIDER)) {
+                    mLocationProvider = LocationManager.GPS_PROVIDER;
+                    LogUtils.d("getAddress refreshLocation()  2222");
+                } else {
+                    return;
+                }
+                Location location = mLocationManager.getLastKnownLocation(mLocationProvider);
+                if (location != null) {
+                    LogUtils.d("getAddress refreshLocation()  3333 = " + location.getLatitude() + " location.getLongitude() = " + location.getLongitude());
+                    getAddress(location.getLatitude(), location.getLongitude());
+                }
+            }
+        }, 2000);
+    }
+
+    public void getAddress(double latitude, double longitude) {
+        if (isViewClose()) { return; }
+        LogUtils.d("getAddress()  2222");
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addresses != null && addresses.size() > 0) {
+                Address address = addresses.get(0);
+                if (address != null) {
+                    String data = address.toString();
+                    if (TextUtils.isEmpty(data)) {
+                        LogUtils.d("getAddress()  (TextUtils.isEmpty(data)");
+//                        updateUserInfo(latitude, longitude, null);
+                    } else {
+                        int startCity = data.indexOf("admin=") + "admin=".length();
+                        int endCity = data.indexOf(",", startCity);
+                        int startPlace = data.indexOf("thoroughfare=") + "thoroughfare=".length();
+                        int endPlace = data.indexOf(",", startPlace);
+                        int startCountry = data.indexOf("countryName=") + "countryName=".length();
+                        int endCountry = data.indexOf(",", startCountry);
+                        String country = data.substring(startCountry, endCountry);
+                        String city = data.substring(startCity, endCity);
+                        String place = data.substring(startPlace, endPlace);
+//                        updateUserInfo(latitude, longitude, country + "\n" + city + "\n" + place);
+
+                        LogUtils.d("getAddress()  (TextUtils.isEmpty(data)"+latitude, longitude, country + "\n" + city + "\n" + place);
+                    }
+                } else {
+//                    updateUserInfo(latitude, longitude, null);
+                }
+            } else {
+//                updateUserInfo(latitude, longitude, null);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+//            updateUserInfo(latitude, longitude, null);
+        }
+    }
+
+    public boolean isViewClose() {
+        return (ActivityUtil.isFinishing(this));
+    }
 }
