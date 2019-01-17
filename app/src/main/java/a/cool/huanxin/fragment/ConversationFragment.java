@@ -12,10 +12,12 @@ import android.widget.AdapterView;
 import com.blankj.utilcode.util.LogUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
 import com.hyphenate.exceptions.HyphenateException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import a.cool.huanxin.R;
 import a.cool.huanxin.adapter.ChatMessageAdapter;
@@ -62,6 +64,11 @@ public class ConversationFragment extends BaseFragment implements View.OnTouchLi
                 @Override
                 public void run() {
                     try {
+
+                        Map<String, EMConversation> conversations = EMClient.getInstance().chatManager().getAllConversations();
+
+                        LogUtils.d("ConversationFragment onViewCreated getAllConversations = " + conversations);
+
                         List<String> usernames = EMClient.getInstance().contactManager().getAllContactsFromServer();
                         LogUtils.d("ConversationFragment onViewCreated usernames = " + usernames);
                         for (String username : usernames) {

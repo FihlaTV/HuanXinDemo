@@ -36,6 +36,7 @@ public class HuanXinServer extends Service {
     public static final String ACTION_NETWORK_STATE_CHANGED = "networkStateChanged";
     private static HuanXinServer INSTANCE;
     private boolean mNetworkConnected = false;
+    public static boolean mHuanXinServerIsConnected = false;
 
     public static void startService() {
         Context context = CCApplication.getInstance();
@@ -127,6 +128,10 @@ public class HuanXinServer extends Service {
         }
     }
 
+    public static boolean isHuanXinServerIsConnected() {
+        return mHuanXinServerIsConnected;
+    }
+
     public static void keepAlive() {
         Log.d("HuanXinServer", "keepAlive()");
         if (INSTANCE == null) {
@@ -146,6 +151,7 @@ public class HuanXinServer extends Service {
 
     private void startSocket() {
         Log.d("HuanXinServer", "startSocket()");
+        if (isHuanXinServerIsConnected()) {return;}
         if (EMClient.getInstance().isLoggedInBefore()) {
             Log.d("HuanXinServer", "startSocket() isLoggedInBefore");
             mHuanXinConnectionListener = new HuanXinConnectionListener();
@@ -159,6 +165,7 @@ public class HuanXinServer extends Service {
 
     private void stopSocket() {
         Log.d("HuanXinServer", "stopSocket()");
+        mHuanXinServerIsConnected = false;
         EMClient.getInstance().chatManager().removeMessageListener(msgListener);
     }
 
@@ -167,10 +174,13 @@ public class HuanXinServer extends Service {
         @Override
         public void onConnected() {
             Log.d("HuanXinServer", ",onConnected ");
+            mHuanXinServerIsConnected = true;
+            EMClient.getInstance().chatManager().loadAllConversations();
         }
 
         @Override
         public void onDisconnected(final int error) {
+            mHuanXinServerIsConnected = false;
             if (error == EMError.USER_REMOVED) {
                 Log.d("HuanXinServer", ",显示帐号已经被移除 ");
             } else if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
@@ -186,6 +196,7 @@ public class HuanXinServer extends Service {
         }
     }
 
+
     public static EMMessageListener msgListener = new EMMessageListener() {
         @Override
         public void onMessageReceived(List<EMMessage> messages) {
@@ -198,6 +209,7 @@ public class HuanXinServer extends Service {
                 messageBean.setReceiceUserName(message.getTo());
                 messageBean.setSendUserName(message.getFrom());
                 messageBean.setCreateAt(message.getMsgTime());
+                messageBean.setMessageId(message.getMsgId());
                 EventBus.getDefault().post(messageBean);
             }
         }
@@ -273,7 +285,6 @@ public class HuanXinServer extends Service {
             @Override
             public void onSuccess() {
                 Log.d("HuanXinServer", "loginHuanXin() onSuccess 登录聊天服务器成功");
-                EMClient.getInstance().chatManager().loadAllConversations();
                 keepAlive();
             }
 
@@ -284,6 +295,7 @@ public class HuanXinServer extends Service {
 
             @Override
             public void onError(int code, String message) {
+                mHuanXinServerIsConnected = false;
                 Log.d("HuanXinServer", "loginHuanXin() onError 登录聊天服务器失败 code = " + code + "  message = " + message);
             }
         });

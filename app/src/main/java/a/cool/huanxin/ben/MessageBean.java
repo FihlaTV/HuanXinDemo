@@ -7,6 +7,7 @@ public class MessageBean {
     private long createAt;
     private String sendUserName;
     public boolean isRead;
+    private String messageId;
 
     public String getReceiceUserName() {
         return receiceUserName;
@@ -48,6 +49,14 @@ public class MessageBean {
         isRead = read;
     }
 
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
+    }
+
     @Override
     public String toString() {
         return "MessageBean{" +
@@ -56,6 +65,7 @@ public class MessageBean {
                 ", createAt=" + createAt +
                 ", sendUserName='" + sendUserName + '\'' +
                 ", isRead=" + isRead +
+                ", messageId='" + messageId + '\'' +
                 '}';
     }
 }
