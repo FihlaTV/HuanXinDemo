@@ -15,6 +15,10 @@ import android.widget.TextView;
 import com.blankj.utilcode.util.LogUtils;
 import com.gyf.barlibrary.ImmersionBar;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,17 +72,17 @@ public class ChatActivity extends BaseActivity {
         initRecyclerView();
         initSwipeRefreshLayout();
         getTextMessageData();
-//        if (!EventBus.getDefault().isRegistered(this)) {
-//            EventBus.getDefault().register(this);
-//        }
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        if (EventBus.getDefault().isRegistered(this)) {
-//            EventBus.getDefault().unregister(this);
-//        }
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     @OnClick(R.id.rl_send_message)
@@ -241,12 +245,12 @@ public class ChatActivity extends BaseActivity {
         });
     }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onReceiveTextChatMessage(MessageBean messageBean) {
-//        LogUtils.d("HuanXinServer onReceiveTextChatMessage messageBean = " + messageBean);
-//        if ((messageBean.getReceiceUserId() == Long.parseLong(mCurrentUser.getPhoneNumber())) && (messageBean.getSendUserId() == Long.parseLong(mChatMessage.getPhoneNumber()))) {
-//            mMessageBeanList.add(messageBean);
-//            refreshRecyclerView(mMessageBeanList);
-//        }
-//    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReceiveTextChatMessage(MessageBean messageBean) {
+        LogUtils.d("HuanXinServer onReceiveTextChatMessage messageBean = " + messageBean);
+        if (messageBean.getReceiceUserName().equals(mCurrentUserName) && messageBean.getSendUserName().equals(mFriendUserName)) {
+            mMessageBeanList.add(messageBean);
+            refreshRecyclerView(mMessageBeanList);
+        }
+    }
 }

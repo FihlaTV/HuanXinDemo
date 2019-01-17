@@ -18,11 +18,14 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.util.NetUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import a.cool.huanxin.CCApplication;
 import a.cool.huanxin.base.ICallback;
 import a.cool.huanxin.ben.CurrentUser;
+import a.cool.huanxin.ben.MessageBean;
 import a.cool.huanxin.manager.CurrentUserManager;
 
 
@@ -191,12 +194,16 @@ public class HuanXinServer extends Service {
         @Override
         public void onMessageReceived(List<EMMessage> messages) {
             //收到消息
-            Log.d("HuanXinServer", "msgListener onMessageReceived  收到消息 messages = " + messages);
-
+            Log.d("HuanXinServer", "msgListener onMessageReceived  收到消息 messages = ");
             for (EMMessage message : messages) {
-                Log.d("HuanXinServer", "msgListener onMessageReceived  收到消息 messages = " + message.getFrom());
-                Log.d("HuanXinServer", "msgListener onMessageReceived  收到消息 messages = " + message.getTo());
-                Log.d("HuanXinServer", "msgListener onMessageReceived  收到消息 messages = " + ((EMTextMessageBody) message.getBody()).getMessage());
+                Log.d("HuanXinServer", "msgListener onMessageReceived  收到消息 messages = " + message);
+                MessageBean messageBean = new MessageBean();
+                messageBean.setMessage(((EMTextMessageBody) message.getBody()).getMessage());
+                messageBean.setReceiceUserName(message.getTo());
+                messageBean.setSendUserName(message.getFrom());
+                messageBean.setCreateAt(message.getMsgTime());
+                EventBus.getDefault().post(messageBean);
+
             }
 
 //            ToastHelper.showShortMessage("收到消息 messages = " + messages);
